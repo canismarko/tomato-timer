@@ -19,7 +19,7 @@
 #define BREAK_TIME 5 * 60 * 1000ul / DEBUG_SPEEDUP
 #define BREAK_TIME_LONG BREAK_TIME * 4
 
-#define TONE_HZ 100
+#define TONE_HZ 200
 
 // Possible states for the system
 #define WORKING 0
@@ -37,21 +37,22 @@
 #define BUZZER A0
 
 // LED pin assignments
-#define RED0 13
-#define RED1 11
-#define RED2 9
-#define RED3 7
-#define RED4 5
-#define GRN0 12
-#define GRN1 10
-#define GRN2 8
-#define GRN3 6
+#define RED0 7
+#define RED1 5
+#define RED2 4
+#define RED3 6
+#define RED4 8
+#define GRN0 10
+#define GRN1 11
+#define GRN2 12
+#define GRN3 13
+#define GRN4 9
 
 // Define pins for the red and green LED's
 const int N_REDS = 5;
 const int RED_PINS[N_REDS] = {RED0, RED1, RED2, RED3, RED4};
-const int N_GRNS = 4;
-const int GRN_PINS[N_GRNS] = {GRN0, GRN1, GRN2, GRN3};
+const int N_GRNS = 5;
+const int GRN_PINS[N_GRNS] = {GRN0, GRN1, GRN2, GRN3, GRN4};
 
 // Variable for keeping track of how long this round has been running
 unsigned long startTime;
@@ -150,14 +151,14 @@ void writeGreenPins(int state) {
 void pauseInit() {
   Serial.print("Pausing init\n");
   // Cycle through the lights
-  char pins[] = {RED0, RED1, RED2, RED3, RED4, GRN3, GRN2, GRN1, GRN0};
+  char pins[] = {RED0, RED1, RED2, RED3, RED4, GRN3, GRN2, GRN1, GRN0, GRN4};
   int pause = 30;
-  for (char i=0; i<9; i++) {
+  for (char i=0; i<10; i++) {
     digitalWrite(pins[i], HIGH);
     delay(pause);
     digitalWrite(pins[i], LOW);
   }
-  for (char i=7; i>-1; i--) {
+  for (char i=9; i>-1; i--) {
     digitalWrite(pins[i], HIGH);
     delay(pause);
     digitalWrite(pins[i], LOW);
@@ -282,12 +283,13 @@ void loop() {
     // Set the green LEDs
     writeRedPins(LOW);
     // Set the green LEDs
-    int n_leds = (runTime - WORK_TIME) / (BREAK_TIME_LONG / N_GRNS) % N_GRNS;
+    // int n_leds = (runTime - WORK_TIME) / (BREAK_TIME_LONG / N_GRNS) % N_GRNS;
+    int n_leds = (runTime - WORK_TIME) / (BREAK_TIME_LONG / (N_GRNS-1)) % (N_GRNS-1);
     for (char i=0; i<n_leds; i++) {
       // Unset the lower pins
       digitalWrite(GRN_PINS[i], LOW);
     }
-    for (char i=n_leds; i<N_GRNS; i++) {
+    for (char i=n_leds; i<(N_GRNS-1); i++) {
       // Set the upper pins
       digitalWrite(GRN_PINS[i], HIGH);
     }
