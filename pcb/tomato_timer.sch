@@ -144,7 +144,7 @@ GND1
 Wire Wire Line
 	3000 3150 3300 3150
 $Comp
-L freetronics_schematic:ARDUINO_SHIELD TOMATO_SHIELD1
+L tomato-timer:ARDUINO_SHIELD TOMATO_SHIELD1
 U 1 1 5A47D418
 P 5100 3550
 F 0 "TOMATO_SHIELD1" H 4650 4700 60  0000 C CNN
@@ -445,7 +445,7 @@ U 1 1 5C48DCF9
 P 7650 3750
 F 0 "D2" H 7700 3400 50  0000 L CNN
 F 1 "NeoPixelRing" H 7700 3500 50  0000 L CNN
-F 2 "" H 7700 3450 50  0001 L TNN
+F 2 "tomato-timer:NeoPixelRing_12" H 7700 3450 50  0001 L TNN
 F 3 "https://www.adafruit.com/product/1938" H 7750 3375 50  0001 L TNN
 	1    7650 3750
 	1    0    0    -1  
@@ -458,7 +458,7 @@ U 1 1 5C495986
 P 7650 2950
 F 0 "D1" H 7700 3200 50  0000 L CNN
 F 1 "NeoPixel_Strip" H 7700 2700 50  0000 L CNN
-F 2 "" H 7700 2650 50  0001 L TNN
+F 2 "Terminal_Blocks:TerminalBlock_bornier-4_P5.08mm" H 7700 2650 50  0001 L TNN
 F 3 "https://www.adafruit.com/product/1938" H 7750 2575 50  0001 L TNN
 	1    7650 2950
 	1    0    0    -1  
@@ -486,10 +486,6 @@ Wire Wire Line
 	7100 2950 7100 3050
 Wire Wire Line
 	7100 3350 7100 3450
-Wire Wire Line
-	3400 5850 3400 6050
-Wire Wire Line
-	2250 5850 2250 6150
 Wire Wire Line
 	3200 3850 3200 4000
 $Comp
@@ -592,4 +588,22 @@ Wire Wire Line
 Connection ~ 8550 2600
 Wire Wire Line
 	9100 2600 9400 2600
+NoConn ~ 6050 3350
+NoConn ~ 6050 3250
+NoConn ~ 6050 3150
+NoConn ~ 6050 3050
+NoConn ~ 6050 2950
+NoConn ~ 6050 3650
+NoConn ~ 6050 3850
+NoConn ~ 6050 3950
+Wire Wire Line
+	2250 6150 2250 5950
+Wire Wire Line
+	2250 5950 2250 5850
+Connection ~ 2250 5950
+Wire Wire Line
+	3400 6050 3400 5950
+Wire Wire Line
+	3400 5950 3400 5850
+Connection ~ 3400 5950
 $EndSCHEMATC
