@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name tomato-timer)(type Legacy)(uri /home/mwolf/src/tomato-timer/pcb/tomato-timer.lib)(options "")(descr ""))
+  (lib (name xbee)(type Legacy)(uri /home/mwolf/kicab-lib/xbee.lib)(options "")(descr ""))
+)

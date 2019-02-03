@@ -1,0 +1,9 @@
+# Temporary emacs files
+*~
+
+# KiCad intermediate files
+pcb/tomato_timer.xml
+pcb/tomato_timer.bak
+pcb/tomato_timer.kicad_pcb-bak
+pcb/tomato_timer-cache.lib
+pcb/tomato-timer.bck

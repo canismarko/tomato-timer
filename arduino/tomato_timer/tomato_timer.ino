@@ -11,9 +11,40 @@
   Mark Wolf
 */
 
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif
+
+// Prepare the NeoPixels
+#define STRIP_PIN 6
+#define RING_PIN 8 // Swap these
+#define N_RING 12
+#define N_STRIP 30
+// Parameter 1 = number of pixels in strip
+// Parameter 2 = Arduino pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
+//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+//   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_STRIP, STRIP_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ring = Adafruit_NeoPixel(N_RING, RING_PIN, NEO_GRB + NEO_KHZ800);
+
+// COLORS
+#define BRIGHTNESS 10 // 0-100
+#define PURPLE strip.Color(255, 0, 255)
+#define TEAL strip.Color(0, 128, 64)
+#define BLACK strip.Color(0, 0, 0)
+#define STRIP_OFF TEAL
+#define RING_OFF BLACK
+#define C_WORK PURPLE
+#define C_REST strip.Color(0, 255, 0)
+
 // Durations for each phase (in milliseconds)
 // Eg. 5 * 60 * 1000 --> 5 min
-#define TICK  400
+#define TICK 400
 #define DEBUG_SPEEDUP 1 // Set to 1 for normal operation
 #define WORK_TIME 25 * 60 * 1000ul / DEBUG_SPEEDUP
 #define BREAK_TIME 5 * 60 * 1000ul / DEBUG_SPEEDUP
@@ -75,26 +106,41 @@ void stop_pressed() {
   stopRequested = true;
 }
 
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+
 // Function for advancing to the next round of work
 void start_next_round() {
   // Flash the lights to indicate the round number
   if (currentRound > 0) {
     sound_buzzer(LOW);
-    writeRedPins(LOW);
-    writeGreenPins(LOW);
+    setAllPixels(ring, RING_OFF);
+    setAllPixels(strip, STRIP_OFF);
     delay(TICK / 2);
-    for (int i=0; i < currentRound; i += 1) {
-      sound_buzzer(HIGH);
-      writeRedPins(HIGH);
-      writeGreenPins(HIGH);
+    for (int j=0; j<currentRound; j += 1) {
+      // sound_buzzer(HIGH);
+      setAllPixels(ring, C_WORK);
+      setAllPixels(strip, C_WORK);      
       delay(TICK / 5);
       sound_buzzer(LOW);
-      writeRedPins(LOW);
-      writeGreenPins(LOW);
+      setAllPixels(ring, RING_OFF);
+      setAllPixels(strip, STRIP_OFF);
       delay(TICK);
     }
-    writeRedPins(LOW);
-    writeGreenPins(LOW);
     delay(TICK / 5);
   }
   // Log to serial console
@@ -110,8 +156,6 @@ void start_next_round() {
   // Turn off buzzer and pause for a moment
   noTone(BUZZER);
   delay(2*TICK);
-  // Keep track of state
-  isStopped = false;
 }
 
 
@@ -131,7 +175,7 @@ void sound_buzzer(int state) {
 }
 
 
-// Function sets all pins in an array
+// Function sets all pins in an arrayset
 void writeRedPins(int state) {
   for (int i = 0; i < N_REDS; i += 1) {
     digitalWrite(RED_PINS[i], state);
@@ -147,26 +191,59 @@ void writeGreenPins(int state) {
 }
 
 
+void setAllPixels(Adafruit_NeoPixel &pixel, uint32_t c) {
+  // Set all the neopixels to the given color
+  for (uint16_t i=0; i < pixel.numPixels(); i++) {
+    pixel.setPixelColor(i, c);
+  }
+  pixel.show();  
+}
+
+
+void setRingLights(int numOn, uint32_t color) {
+  // Set a certain number of LEDs on the ring to on
+  for (int i=0; i<numOn; i++) {
+    ring.setPixelColor(i, color);
+  }
+  // Set the remaining LEDs off
+  for (int i=numOn; i<N_RING; i++) {
+    ring.setPixelColor(i, RING_OFF);
+  }
+  ring.show();
+}
+
+
 // Function that fluorishes the lights, then waits for the user to press the "Go" button
 void pauseInit() {
   Serial.print("Pausing init\n");
   // Cycle through the lights
-  char pins[] = {RED0, RED1, RED2, RED3, RED4, GRN3, GRN2, GRN1, GRN0, GRN4};
-  int pause = 30;
-  for (char i=0; i<10; i++) {
-    digitalWrite(pins[i], HIGH);
-    delay(pause);
-    digitalWrite(pins[i], LOW);
+  for (byte i=0; i < 255; i=i+1) {
+    uint32_t color = Wheel(i);
+    // Set the strip LED to on
+    uint16_t pxIdx = i * N_STRIP / 255;
+    strip.setPixelColor(pxIdx, color);
+    // Set the ring LED to on
+    pxIdx = i * N_RING / 255;
+    ring.setPixelColor(pxIdx, color);
+    // Update the device and wait for a bit
+    strip.show();
+    ring.show();
+    delay(0.5);
   }
-  for (char i=9; i>-1; i--) {
-    digitalWrite(pins[i], HIGH);
-    delay(pause);
-    digitalWrite(pins[i], LOW);
-  }
-
-  // Wait for user to press the go button
-  while (!btnPressed) {
-    delay(100);
+  // Cycle off the lights
+  for (byte i=0; i < 255; i=i+1) {
+    // Set the strip LED to on
+    // uint16_t pxIdx = N_STRIP - (i * N_STRIP / 255) - 1;
+    uint16_t pxIdx = i * N_STRIP / 255;
+    strip.setPixelColor(pxIdx, STRIP_OFF);
+    // Set the ring LED off
+    // pxIdx = N_RING - (i * N_RING / 255) - 1;
+    pxIdx = i * N_RING / 255;
+    ring.setPixelColor(pxIdx, RING_OFF);
+    // Update the device and wait for a bit
+    strip.show();
+    ring.show();
+    delay(0.5);
   }
 }
 
@@ -174,20 +251,22 @@ void pauseInit() {
 // the setup function runs once when you press reset or power the board
 void setup() {
   Serial.begin(9600);
-  // initialize digital pin LED_BUILTIN as an output.
-  for (int i = 0; i < N_REDS; i++) {
-    pinMode(RED_PINS[i], OUTPUT);
-  }
-  for (int i = 0; i < N_GRNS; i++) {
-    pinMode(GRN_PINS[i], OUTPUT);
-  }
 
+  // Initialize the Neo Pixels
+  strip.begin();
+  ring.setBrightness(BRIGHTNESS);
+  strip.show(); // Initialize all pixels to 'off'
+  ring.begin();
+  ring.setBrightness(BRIGHTNESS);
+  ring.show(); // Initialize all pixels to 'off'
+  
   // Set the interrupt for when the various buttons are pressed
   // attachInterrupt(digitalPinToInterrupt(MUTE_PIN), mute_buzzer, RISING);
   attachInterrupt(digitalPinToInterrupt(BTN_START), press_button, RISING);
   attachInterrupt(digitalPinToInterrupt(BTN_STOP), stop_pressed, RISING);
 
   // Start of on the first round
+  isStopped = true;
   currentRound = 0;
 
   // Wait for the user to press the go button
@@ -234,18 +313,15 @@ int currentState() {
 
 void loop() {
 
-  // Set the appropriate LEDs
   int state = currentState();
   
-  // Check if the user 
+  // Check if the user pressed a button during the last loop
   if (btnPressed) {
     if (state == WORKING && currentRound > 0) {
       currentRound -= 1;
     }
     start_next_round();
   }
-
-
 
   unsigned long runTime = millis() - startTime;
   char tickPhase = (runTime) % (TICK * 2) / TICK;
@@ -264,40 +340,31 @@ void loop() {
     // And away we gooooo....
     startTime = millis();
   } else if (state == WORKING) {
-    writeGreenPins(LOW);
-    // Set the red LEDs
-    int n_leds = (runTime) / (WORK_TIME / N_REDS) % N_REDS;
-    for (char i=0; i<n_leds; i++) {
-      // Unset the lower pins
-      digitalWrite(RED_PINS[i], LOW);
-    }
-    for (char i=n_leds; i<N_REDS; i++) {
-      // Set the upper pins
-      digitalWrite(RED_PINS[i], HIGH);
-    }
+    // Set the LEDs while working
+    int n_leds = (WORK_TIME - runTime) / (WORK_TIME / (N_RING)) % (N_RING);
+    setRingLights(n_leds + 1, C_WORK);
+    setAllPixels(strip, C_WORK);
   } else if (state == BREAK) {
-    writeRedPins(LOW);
-    // Just set one green LED
-    digitalWrite(GRN3, HIGH);
+    // Set the LEDs while taking a short break
+    int n_leds = (WORK_TIME + BREAK_TIME - runTime) / (WORK_TIME / (N_RING)) % (N_RING);
+    setRingLights(n_leds + 1, C_REST);
+    setAllPixels(strip, C_REST);
   } else if (state == LONG_BREAK) {
-    // Set the green LEDs
-    writeRedPins(LOW);
-    // Set the green LEDs
-    // int n_leds = (runTime - WORK_TIME) / (BREAK_TIME_LONG / N_GRNS) % N_GRNS;
-    int n_leds = (runTime - WORK_TIME) / (BREAK_TIME_LONG / (N_GRNS-1)) % (N_GRNS-1);
-    for (char i=0; i<n_leds; i++) {
-      // Unset the lower pins
-      digitalWrite(GRN_PINS[i], LOW);
-    }
-    for (char i=n_leds; i<(N_GRNS-1); i++) {
-      // Set the upper pins
-      digitalWrite(GRN_PINS[i], HIGH);
-    }
+    // Set the LEDs while taking a long break
+    int n_leds = (WORK_TIME + BREAK_TIME_LONG - runTime) / (WORK_TIME / (N_RING)) % (N_RING);
+    setRingLights(n_leds + 1, C_REST);
+    setAllPixels(strip, C_REST);
   } else if (state == EXPIRED) {
-    
     sound_buzzer(tickPhase);
-    writeRedPins(tickPhase);
-    writeGreenPins(LOW);
+    if (tickPhase == LOW) {
+      setAllPixels(strip, C_WORK);
+      setAllPixels(ring, C_WORK);
+    } else {
+      setAllPixels(strip, STRIP_OFF);
+      setAllPixels(ring, RING_OFF);
+    }
+    // writeRedPins(tickPhase);
+    // writeGreenPins(LOW);
   }
 
   // Check if the buzzer should sound to alert that a break has just started
