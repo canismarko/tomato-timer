@@ -491,12 +491,12 @@ Wire Wire Line
 $Comp
 L tomato-timer:Barrel_Jack J1
 U 1 1 5C51A2A7
-P 10050 3350
-F 0 "J1" H 9821 3308 50  0000 R CNN
-F 1 "External_Power" H 9821 3399 50  0000 R CNN
-F 2 "Connectors:BARREL_JACK" H 10100 3310 50  0001 C CNN
-F 3 "~" H 10100 3310 50  0001 C CNN
-	1    10050 3350
+P 10500 3350
+F 0 "J1" H 10271 3308 50  0000 R CNN
+F 1 "External_Power" H 10271 3399 50  0000 R CNN
+F 2 "Connectors:BARREL_JACK" H 10550 3310 50  0001 C CNN
+F 3 "~" H 10550 3310 50  0001 C CNN
+	1    10500 3350
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
@@ -523,11 +523,7 @@ F 3 "~" H 9600 3350 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	9750 3450 9750 3500
-Wire Wire Line
 	9750 3500 9600 3500
-Wire Wire Line
-	9750 3250 9750 3200
 Wire Wire Line
 	9750 3200 9600 3200
 Wire Wire Line
@@ -606,4 +602,16 @@ Wire Wire Line
 Wire Wire Line
 	3400 5950 3400 5850
 Connection ~ 3400 5950
+Wire Wire Line
+	9750 3450 9750 3500
+Text Label 10200 3450 2    50   ~ 0
+5V_IN
+Text Label 10200 3250 2    50   ~ 0
+GND_IN
+Wire Wire Line
+	9750 3200 9750 3250
+Wire Wire Line
+	9750 3250 10200 3250
+Wire Wire Line
+	9750 3450 10200 3450
 $EndSCHEMATC
