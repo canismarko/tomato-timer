@@ -15,25 +15,14 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Switch:SW_SPDT SW1
-U 1 1 5A463556
-P 2900 4000
-F 0 "SW1" H 2900 4170 50  0000 C CNN
-F 1 "SW_SPDT" H 2900 3800 50  0000 C CNN
-F 2 "tomato_timer:Tomato_SPDT_Switch" H 2900 4000 50  0001 C CNN
-F 3 "" H 2900 4000 50  0001 C CNN
-	1    2900 4000
-	-1   0    0    -1  
-$EndComp
-$Comp
 L Device:Speaker_Crystal LS1
 U 1 1 5A4636B7
-P 2150 4400
-F 0 "LS1" H 2450 4450 50  0000 R CNN
-F 1 "Speaker_Crystal" H 2900 4300 50  0000 R CNN
-F 2 "tomato_timer:Buzzer160" H 2115 4350 50  0001 C CNN
-F 3 "" H 2115 4350 50  0001 C CNN
-	1    2150 4400
+P 3100 4200
+F 0 "LS1" H 3400 4250 50  0000 R CNN
+F 1 "Speaker_Crystal" H 3850 4100 50  0000 R CNN
+F 2 "tomato_timer:Buzzer160" H 3065 4150 50  0001 C CNN
+F 3 "" H 3065 4150 50  0001 C CNN
+	1    3100 4200
 	-1   0    0    1   
 $EndComp
 Text Label 3650 3850 0    60   ~ 0
@@ -102,8 +91,6 @@ $EndComp
 Text Label 4050 3150 2    60   ~ 0
 RESET
 Wire Wire Line
-	3500 3850 4150 3850
-Wire Wire Line
 	7600 5050 7700 5050
 Wire Wire Line
 	7000 5050 7100 5050
@@ -160,20 +147,16 @@ Wire Wire Line
 	7050 4150 6050 4150
 Wire Wire Line
 	4150 3250 3900 3250
-Wire Wire Line
-	4150 3350 3900 3350
 NoConn ~ 4150 2950
 NoConn ~ 4150 3050
 NoConn ~ 4150 3650
 Text Label 3900 3550 0    60   ~ 0
 GND2
-Text Label 3900 3450 0    60   ~ 0
+Text Label 3300 3650 0    60   ~ 0
 GND1
 Wire Wire Line
-	4150 3450 3900 3450
-Wire Wire Line
 	3900 3550 4150 3550
-Text Label 3900 3350 0    60   ~ 0
+Text Label 3300 3350 0    60   ~ 0
 5V
 Text Label 3900 3250 0    60   ~ 0
 3V3
@@ -362,48 +345,8 @@ GND1
 Wire Wire Line
 	4050 5550 3950 5550
 Connection ~ 3950 5550
-Text Label 3050 4600 2    60   ~ 0
+Text Label 3100 4400 0    60   ~ 0
 GND3
-NoConn ~ 2700 3900
-$Comp
-L Device:R R17
-U 1 1 5A4AD62E
-P 2550 4350
-F 0 "R17" V 2630 4350 50  0000 C CNN
-F 1 "1K" V 2550 4350 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 2480 4350 50  0001 C CNN
-F 3 "" H 2550 4350 50  0001 C CNN
-	1    2550 4350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2350 4100 2550 4100
-Wire Wire Line
-	2350 4100 2350 4300
-Wire Wire Line
-	2550 4200 2550 4100
-Connection ~ 2550 4100
-Wire Wire Line
-	2350 4400 2350 4600
-Wire Wire Line
-	2350 4600 2550 4600
-Wire Wire Line
-	2550 4500 2550 4600
-Connection ~ 2550 4600
-$Comp
-L Device:R_Variable RV1
-U 1 1 5A4ADEFF
-P 3350 3850
-F 0 "RV1" V 3175 3850 50  0000 C CNN
-F 1 "POT" V 3250 3850 50  0000 C CNN
-F 2 "tomato_timer:Bourns_3310P_Potentiometer" H 3350 3850 50  0001 C CNN
-F 3 "" H 3350 3850 50  0001 C CNN
-	1    3350 3850
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	3100 4000 3200 4000
-NoConn ~ 3350 3700
 Wire Wire Line
 	7100 5050 7200 5050
 Wire Wire Line
@@ -418,10 +361,6 @@ Wire Wire Line
 	2250 5350 2250 5450
 Wire Wire Line
 	3950 5550 3950 5950
-Wire Wire Line
-	2550 4100 2700 4100
-Wire Wire Line
-	2550 4600 3050 4600
 Wire Wire Line
 	6050 2850 6300 2850
 Text Label 6300 2850 2    50   ~ 0
@@ -486,8 +425,6 @@ Wire Wire Line
 	7100 2950 7100 3050
 Wire Wire Line
 	7100 3350 7100 3450
-Wire Wire Line
-	3200 3850 3200 4000
 $Comp
 L tomato-timer:Barrel_Jack J1
 U 1 1 5C51A2A7
@@ -614,4 +551,57 @@ Wire Wire Line
 	9750 3250 10200 3250
 Wire Wire Line
 	9750 3450 10200 3450
+$Comp
+L Device:R_POT RV1
+U 1 1 5C5939E4
+P 3550 4100
+F 0 "RV1" H 3480 4054 50  0000 R CNN
+F 1 "10K" H 3480 4145 50  0000 R CNN
+F 2 "tomato-timer:Whell_Potentiometer_3352T" H 3550 4100 50  0001 C CNN
+F 3 "~" H 3550 4100 50  0001 C CNN
+	1    3550 4100
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3400 4100 3300 4100
+Wire Wire Line
+	4150 3850 3550 3850
+Wire Wire Line
+	3550 3850 3550 3950
+Wire Wire Line
+	3550 4250 3550 4400
+Wire Wire Line
+	3550 4400 3400 4400
+Wire Wire Line
+	3300 4200 3400 4200
+Wire Wire Line
+	3400 4200 3400 4400
+Connection ~ 3400 4400
+Wire Wire Line
+	3400 4400 3100 4400
+Wire Wire Line
+	4150 3450 3850 3450
+$Comp
+L Device:C C?
+U 1 1 5C5AD1FF
+P 3700 3500
+F 0 "C?" H 3586 3454 50  0000 R CNN
+F 1 "0.1uF" H 3586 3545 50  0000 R CNN
+F 2 "" H 3738 3350 50  0001 C CNN
+F 3 "~" H 3700 3500 50  0001 C CNN
+	1    3700 3500
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	3300 3350 3700 3350
+Wire Wire Line
+	3300 3650 3700 3650
+Connection ~ 3700 3650
+Wire Wire Line
+	3700 3650 3850 3650
+Connection ~ 3700 3350
+Wire Wire Line
+	3700 3350 4150 3350
+Wire Wire Line
+	3850 3450 3850 3650
 $EndSCHEMATC
