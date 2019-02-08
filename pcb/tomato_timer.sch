@@ -33,7 +33,7 @@ U 1 1 5A463ABF
 P 6500 5300
 F 0 "R5" V 6580 5300 50  0000 C CNN
 F 1 "10K" V 6500 5300 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 6430 5300 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 6430 5300 50  0001 C CNN
 F 3 "" H 6500 5300 50  0001 C CNN
 	1    6500 5300
 	-1   0    0    -1  
@@ -44,7 +44,7 @@ U 1 1 5A463B64
 P 7700 5300
 F 0 "R6" V 7780 5300 50  0000 C CNN
 F 1 "10K" V 7700 5300 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 7630 5300 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 7630 5300 50  0001 C CNN
 F 3 "" H 7700 5300 50  0001 C CNN
 	1    7700 5300
 	-1   0    0    -1  
@@ -75,8 +75,8 @@ Text Label 6050 4150 0    60   ~ 0
 BTN_START
 Text Label 6050 4050 0    60   ~ 0
 BTN_STOP
-Text Label 7100 5600 3    60   ~ 0
-GND1
+Text Label 7100 5850 1    60   ~ 0
+GND
 $Comp
 L Switch:SW_Push SW2
 U 1 1 5A467038
@@ -127,7 +127,7 @@ Wire Wire Line
 Text Label 7100 5300 1    60   ~ 0
 5V
 Text Label 3000 3150 0    60   ~ 0
-GND1
+GND
 Wire Wire Line
 	3000 3150 3300 3150
 $Comp
@@ -151,9 +151,9 @@ NoConn ~ 4150 2950
 NoConn ~ 4150 3050
 NoConn ~ 4150 3650
 Text Label 3900 3550 0    60   ~ 0
-GND2
+GND
 Text Label 3300 3650 0    60   ~ 0
-GND1
+GND
 Wire Wire Line
 	3900 3550 4150 3550
 Text Label 3300 3350 0    60   ~ 0
@@ -206,7 +206,7 @@ U 1 1 5A481AD9
 P 3250 5950
 F 0 "R4" V 3330 5950 50  0000 C CNN
 F 1 "10K" V 3250 5950 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3180 5950 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 3180 5950 50  0001 C CNN
 F 3 "" H 3250 5950 50  0001 C CNN
 	1    3250 5950
 	0    1    1    0   
@@ -217,7 +217,7 @@ U 1 1 5A481CF0
 P 3150 5350
 F 0 "R3" V 3230 5350 50  0000 C CNN
 F 1 "10K" V 3150 5350 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3080 5350 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 3080 5350 50  0001 C CNN
 F 3 "" H 3150 5350 50  0001 C CNN
 	1    3150 5350
 	0    -1   -1   0   
@@ -256,7 +256,7 @@ U 1 1 5A482886
 P 2100 5950
 F 0 "R2" V 2180 5950 50  0000 C CNN
 F 1 "10K" V 2100 5950 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 2030 5950 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 2030 5950 50  0001 C CNN
 F 3 "" H 2100 5950 50  0001 C CNN
 	1    2100 5950
 	0    1    1    0   
@@ -267,7 +267,7 @@ U 1 1 5A48288F
 P 2000 5350
 F 0 "R1" V 2080 5350 50  0000 C CNN
 F 1 "10K" V 2000 5350 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 1930 5350 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 1930 5350 50  0001 C CNN
 F 3 "" H 2000 5350 50  0001 C CNN
 	1    2000 5350
 	0    -1   -1   0   
@@ -325,15 +325,15 @@ NoConn ~ 4050 6550
 NoConn ~ 6150 5950
 Wire Wire Line
 	4050 6850 3800 6850
-Text Label 4050 6850 2    60   ~ 0
-GND1
+Text Label 3800 6850 0    60   ~ 0
+GND
 $Comp
 L Device:C C1
 U 1 1 5A4990AD
 P 4200 5550
 F 0 "C1" H 4225 5650 50  0000 L CNN
 F 1 "0.1uF" H 4225 5450 50  0000 L CNN
-F 2 "Capacitors_SMD:C_1206_HandSoldering" H 4238 5400 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 4238 5400 50  0001 C CNN
 F 3 "" H 4200 5550 50  0001 C CNN
 	1    4200 5550
 	0    1    1    0   
@@ -341,12 +341,12 @@ $EndComp
 Wire Wire Line
 	4350 5550 4350 5300
 Text Label 4350 5300 3    60   ~ 0
-GND1
+GND
 Wire Wire Line
 	4050 5550 3950 5550
 Connection ~ 3950 5550
 Text Label 3100 4400 0    60   ~ 0
-GND3
+GND
 Wire Wire Line
 	7100 5050 7200 5050
 Wire Wire Line
@@ -364,14 +364,14 @@ Wire Wire Line
 Wire Wire Line
 	6050 2850 6300 2850
 Text Label 6300 2850 2    50   ~ 0
-GND3
+GND
 $Comp
 L Device:R R7
 U 1 1 5C489D66
 P 7000 3750
 F 0 "R7" V 6793 3750 50  0000 C CNN
 F 1 "470" V 6884 3750 50  0000 C CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 6930 3750 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 6930 3750 50  0001 C CNN
 F 3 "~" H 7000 3750 50  0001 C CNN
 	1    7000 3750
 	0    1    1    0   
@@ -397,7 +397,7 @@ U 1 1 5C495986
 P 7650 2950
 F 0 "D1" H 7700 3200 50  0000 L CNN
 F 1 "NeoPixel_Strip" H 7700 2700 50  0000 L CNN
-F 2 "Terminal_Blocks:TerminalBlock_bornier-4_P5.08mm" H 7700 2650 50  0001 L TNN
+F 2 "tomato-timer:SSW-104-02-G-S-RA_4POS_Female_Header" H 7700 2650 50  0001 L TNN
 F 3 "https://www.adafruit.com/product/1938" H 7750 2575 50  0001 L TNN
 	1    7650 2950
 	1    0    0    -1  
@@ -416,7 +416,7 @@ U 1 1 5C4AD420
 P 7100 3200
 F 0 "R8" H 7170 3246 50  0000 L CNN
 F 1 "470" H 7170 3155 50  0000 L CNN
-F 2 "Resistors_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 7030 3200 50  0001 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 7030 3200 50  0001 C CNN
 F 3 "~" H 7100 3200 50  0001 C CNN
 	1    7100 3200
 	1    0    0    -1  
@@ -454,7 +454,7 @@ U 1 1 5C539ABA
 P 9600 3350
 F 0 "C2" H 9400 3400 50  0000 L CNN
 F 1 "1000uF" H 9200 3300 50  0000 L CNN
-F 2 "Capacitors_THT:CP_Radial_D10.0mm_P5.00mm" H 9638 3200 50  0001 C CNN
+F 2 "tomato-timer:SMD-2824" H 9638 3200 50  0001 C CNN
 F 3 "~" H 9600 3350 50  0001 C CNN
 	1    9600 3350
 	1    0    0    1   
@@ -486,7 +486,7 @@ Wire Wire Line
 	9050 3250 9050 3200
 Connection ~ 8400 3250
 Text Label 9300 4150 2    50   ~ 0
-GND2
+GND
 Text Label 9400 2600 2    50   ~ 0
 5V
 $Comp
@@ -582,12 +582,12 @@ Wire Wire Line
 Wire Wire Line
 	4150 3450 3850 3450
 $Comp
-L Device:C C?
+L Device:C C3
 U 1 1 5C5AD1FF
 P 3700 3500
-F 0 "C?" H 3586 3454 50  0000 R CNN
+F 0 "C3" H 3586 3454 50  0000 R CNN
 F 1 "0.1uF" H 3586 3545 50  0000 R CNN
-F 2 "" H 3738 3350 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H 3738 3350 50  0001 C CNN
 F 3 "~" H 3700 3500 50  0001 C CNN
 	1    3700 3500
 	1    0    0    1   
