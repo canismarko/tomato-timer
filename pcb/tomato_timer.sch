@@ -14,18 +14,7 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L Device:Speaker_Crystal LS1
-U 1 1 5A4636B7
-P 3100 4200
-F 0 "LS1" H 3400 4250 50  0000 R CNN
-F 1 "Speaker_Crystal" H 3850 4100 50  0000 R CNN
-F 2 "tomato_timer:Buzzer160" H 3065 4150 50  0001 C CNN
-F 3 "" H 3065 4150 50  0001 C CNN
-	1    3100 4200
-	-1   0    0    1   
-$EndComp
-Text Label 3650 3850 0    60   ~ 0
+Text Label 4150 3950 2    60   ~ 0
 BUZZER
 $Comp
 L Device:R R5
@@ -160,7 +149,6 @@ Text Label 3300 3350 0    60   ~ 0
 5V
 Text Label 3900 3250 0    60   ~ 0
 3V3
-NoConn ~ 4150 3950
 NoConn ~ 4150 4050
 NoConn ~ 4150 4150
 NoConn ~ 4150 4250
@@ -193,7 +181,7 @@ U 1 1 5A481955
 P 3300 5650
 F 0 "Q2" H 3500 5725 50  0000 L CNN
 F 1 "BSS138" H 3500 5650 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 3500 5575 50  0001 L CIN
+F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 3500 5575 50  0001 L CIN
 F 3 "" H 3300 5650 50  0001 L CNN
 	1    3300 5650
 	1    0    0    -1  
@@ -243,7 +231,7 @@ U 1 1 5A48287F
 P 2150 5650
 F 0 "Q1" H 2350 5725 50  0000 L CNN
 F 1 "BSS138" H 2350 5650 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 2350 5575 50  0001 L CIN
+F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 2350 5575 50  0001 L CIN
 F 3 "" H 2150 5650 50  0001 L CNN
 	1    2150 5650
 	1    0    0    -1  
@@ -345,8 +333,6 @@ GND
 Wire Wire Line
 	4050 5550 3950 5550
 Connection ~ 3950 5550
-Text Label 3100 4400 0    60   ~ 0
-GND
 Wire Wire Line
 	7100 5050 7200 5050
 Wire Wire Line
@@ -554,31 +540,14 @@ Wire Wire Line
 $Comp
 L Device:R_POT RV1
 U 1 1 5C5939E4
-P 3550 4100
-F 0 "RV1" H 3480 4054 50  0000 R CNN
-F 1 "10K" H 3480 4145 50  0000 R CNN
-F 2 "tomato-timer:Whell_Potentiometer_3352T" H 3550 4100 50  0001 C CNN
-F 3 "~" H 3550 4100 50  0001 C CNN
-	1    3550 4100
+P 2650 4150
+F 0 "RV1" H 2580 4104 50  0000 R CNN
+F 1 "10K" H 2580 4195 50  0000 R CNN
+F 2 "tomato-timer:Whell_Potentiometer_3352T" H 2650 4150 50  0001 C CNN
+F 3 "~" H 2650 4150 50  0001 C CNN
+	1    2650 4150
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	3400 4100 3300 4100
-Wire Wire Line
-	4150 3850 3550 3850
-Wire Wire Line
-	3550 3850 3550 3950
-Wire Wire Line
-	3550 4250 3550 4400
-Wire Wire Line
-	3550 4400 3400 4400
-Wire Wire Line
-	3300 4200 3400 4200
-Wire Wire Line
-	3400 4200 3400 4400
-Connection ~ 3400 4400
-Wire Wire Line
-	3400 4400 3100 4400
 Wire Wire Line
 	4150 3450 3850 3450
 $Comp
@@ -604,4 +573,97 @@ Wire Wire Line
 	3700 3350 4150 3350
 Wire Wire Line
 	3850 3450 3850 3650
+$Comp
+L Device:Speaker_Crystal LS1
+U 1 1 5A4636B7
+P 1900 4400
+F 0 "LS1" H 2200 4450 50  0000 R CNN
+F 1 "Speaker_Crystal" H 2650 4300 50  0000 R CNN
+F 2 "tomato_timer:Buzzer160" H 1865 4350 50  0001 C CNN
+F 3 "" H 1865 4350 50  0001 C CNN
+	1    1900 4400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R10
+U 1 1 5C6C3BE0
+P 2300 4350
+F 0 "R10" H 2370 4396 50  0000 L CNN
+F 1 "1K" H 2370 4305 50  0000 L CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 2230 4350 50  0001 C CNN
+F 3 "~" H 2300 4350 50  0001 C CNN
+	1    2300 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L freetronics_schematic:TRANSISTOR_NPN Q3
+U 1 1 5C6D51BD
+P 2950 4450
+F 0 "Q3" V 3186 4450 50  0000 C CNN
+F 1 "TRANSISTOR_NPN" V 3277 4450 50  0000 C CNN
+F 2 "tomato-timer:MMBT6428LT1G_NPN" H 2950 4450 60  0001 C CNN
+F 3 "" H 2950 4450 60  0000 C CNN
+	1    2950 4450
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	3150 4550 3450 4550
+Text Label 3450 4550 2    50   ~ 0
+GND
+Text Label 2650 3850 3    50   ~ 0
+5V
+Wire Wire Line
+	2950 4250 2950 4050
+Wire Wire Line
+	2950 4050 3000 4050
+Wire Wire Line
+	2650 4000 2650 3850
+Wire Wire Line
+	2300 4500 2300 4550
+Wire Wire Line
+	2100 4400 2100 4550
+Wire Wire Line
+	2100 4550 2300 4550
+Connection ~ 2300 4550
+Wire Wire Line
+	2100 4150 2300 4150
+Wire Wire Line
+	2300 4150 2300 4200
+Wire Wire Line
+	2100 4150 2100 4300
+Wire Wire Line
+	2300 4150 2500 4150
+Connection ~ 2300 4150
+Wire Wire Line
+	2300 4550 2650 4550
+Wire Wire Line
+	2650 4300 2650 4550
+Connection ~ 2650 4550
+Wire Wire Line
+	2650 4550 2750 4550
+$Comp
+L Device:R R9
+U 1 1 5C7424C2
+P 3150 4050
+F 0 "R9" V 3357 4050 50  0000 C CNN
+F 1 "10K" V 3266 4050 50  0000 C CNN
+F 2 "Resistors_SMD:R_1206_HandSoldering" V 3080 4050 50  0001 C CNN
+F 3 "~" H 3150 4050 50  0001 C CNN
+	1    3150 4050
+	0    1    -1   0   
+$EndComp
+Wire Wire Line
+	4150 3950 3300 3950
+Wire Wire Line
+	3300 3950 3300 4050
+Wire Wire Line
+	4150 3850 3300 3850
+Wire Wire Line
+	3300 3850 3300 3750
+Wire Wire Line
+	3300 3750 2300 3750
+Wire Wire Line
+	2300 3750 2300 4150
+Text Label 4150 3850 2    50   ~ 0
+VOL_IN
 $EndSCHEMATC
