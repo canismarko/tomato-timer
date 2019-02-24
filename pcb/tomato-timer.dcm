@@ -18,4 +18,10 @@ K DC power barrel jack connector
 F ~
 $ENDCMP
 #
+$CMP NeoPixel_Strip
+D RGB LED with integrated controller, 5mm/8mm LED package
+K RGB LED NeoPixel addressable
+F https://www.adafruit.com/product/1938
+$ENDCMP
+#
 #End Doc Library

@@ -17,8 +17,8 @@
 #endif
 
 // Prepare the NeoPixels
-#define STRIP_PIN 6
-#define RING_PIN 8 // Swap these
+#define STRIP_PIN 7
+#define RING_PIN 6 // Swap these
 #define N_RING 12
 #define N_STRIP 30
 // Parameter 1 = number of pixels in strip
@@ -45,7 +45,7 @@ Adafruit_NeoPixel ring = Adafruit_NeoPixel(N_RING, RING_PIN, NEO_GRB + NEO_KHZ80
 // Durations for each phase (in milliseconds)
 // Eg. 5 * 60 * 1000 --> 5 min
 #define TICK 400
-#define DEBUG_SPEEDUP 1 // Set to 1 for normal operation
+#define DEBUG_SPEEDUP 100 // Set to 1 for normal operation
 #define WORK_TIME 25 * 60 * 1000ul / DEBUG_SPEEDUP
 #define BREAK_TIME 5 * 60 * 1000ul / DEBUG_SPEEDUP
 #define BREAK_TIME_LONG BREAK_TIME * 4
@@ -65,7 +65,7 @@ Adafruit_NeoPixel ring = Adafruit_NeoPixel(N_RING, RING_PIN, NEO_GRB + NEO_KHZ80
 // #define BTN_PIN 2
 // #define BTN_STOP 19
 // #define MUTE_PIN 2
-#define BUZZER A0
+#define BUZZER A1
 
 // LED pin assignments
 #define RED0 7
@@ -356,7 +356,7 @@ void loop() {
     setAllPixels(strip, C_REST);
   } else if (state == EXPIRED) {
     sound_buzzer(tickPhase);
-    if (tickPhase == LOW) {
+    if (tickPhase == HIGH) {
       setAllPixels(strip, C_WORK);
       setAllPixels(ring, C_WORK);
     } else {
