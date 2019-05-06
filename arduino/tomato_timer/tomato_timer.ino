@@ -29,7 +29,7 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_STRIP, STRIP_PIN, NEO_RGBW + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_STRIP, STRIP_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(N_RING, RING_PIN, NEO_GRB + NEO_KHZ800);
 
 // COLORS
@@ -224,6 +224,8 @@ void setTimerLights(unsigned long mSeconds, long roundNum, float workBrightnessA
 
 
 void setWorkLights(unsigned long mSeconds, long roundNum) {
+  // Set all the strip lights
+  setAllPixels(strip, C_WORK);
   return setTimerLights(mSeconds, roundNum);
 }
 
@@ -238,7 +240,11 @@ void setBreakLights(unsigned long mSeconds, long roundNum) {
   } else {
     // Display how much break time there is left
     setTimerLights(mSeconds, roundNum, 0.);
+    // Set the strip lights to be green
+    setAllPixels(strip, C_REST);
   }
+  
+  
 }
 
 
@@ -254,10 +260,12 @@ void flashLights(unsigned long mSeconds, uint32_t color) {
   if (numTicks % 2) {
     // Odd tick
     setAllPixels(ring, RING_OFF, true);
+    setAllPixels(strip, RING_OFF, false);
     noTone(BUZZER);
   } else {
     // Even tick
     setAllPixels(ring, color, true);
+    setAllPixels(strip, color, false);
     tone(BUZZER, TONE_HZ);
   }
 }
@@ -345,22 +353,3 @@ void loop() {
   // Sleep until the next round
   delay(TICK);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
