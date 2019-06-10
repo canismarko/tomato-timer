@@ -65,25 +65,53 @@ const unsigned long BREAK_SEC = 5 * 60; // 5 min (in seconds)
 #define BTN_STOP 3
 #define BUZZER A1
 
+// Variables for debouncing buttons
+#define DEBOUNCE_MS 150
+unsigned long lastBtnPress;
 
 // Variable for keeping track of how long this round has been running
 unsigned long startTime;
 char state;
 long roundNum;
 
+// Variable for keeping track of if the user has silenced the buzzer
+bool isSilenced;
+#define AUDIBLE 0
+#define SILENCED 1
+
+bool isNewBtnPress() {
+  // Check if it's been long enough since the last button press registered
+  //   to consider this a unique button press.
+  unsigned long deltaBtnPress = millis() - lastBtnPress;
+  lastBtnPress = millis();
+  if (deltaBtnPress > DEBOUNCE_MS) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // Function to start a work sesstion when the user presses the button
 void start_pressed() {
+  if (isNewBtnPress()) {
   Serial.print("Start button pressed\n");
-  if (state != RUNNING) {
-    state = STARTING;
+    if (state != RUNNING) {
+      state = STARTING;
+    }
   }
 }
 
 
 void stop_pressed() {
-  Serial.print("Stop requested\n");
-  state = STOPPING;
+  if (isNewBtnPress()) {
+    if (isSilenced == AUDIBLE && state == EXPIRED) {
+      Serial.println("Buzzer silenced");
+      isSilenced = SILENCED;
+    } else {
+      Serial.print("Stop requested\n");
+      state = STOPPING;
+    }
+  }
 }
 
 void startTimer() {
@@ -91,6 +119,7 @@ void startTimer() {
   state = RUNNING;
   startTime = millis();
   roundNum = roundNum + 1;
+  isSilenced = AUDIBLE;
   Serial.print("Starting round ");
   Serial.print(roundNum);
   Serial.print(" at ");
@@ -266,7 +295,9 @@ void flashLights(unsigned long mSeconds, uint32_t color) {
     // Even tick
     setAllPixels(ring, color, true);
     setAllPixels(strip, color, false);
-    tone(BUZZER, TONE_HZ);
+    if (isSilenced == AUDIBLE) {
+      tone(BUZZER, TONE_HZ);
+    }
   }
 }
 
@@ -324,6 +355,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(BTN_STOP), stop_pressed, RISING);
 
   // Set initial state
+  lastBtnPress = millis();
   stopTimer();
 }
 
