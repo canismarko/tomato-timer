@@ -20,7 +20,7 @@
 #define STRIP_PIN 7
 #define RING_PIN 6 // Swap these
 #define N_RING 12
-#define N_STRIP 30
+#define N_STRIP 75
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
 // Parameter 3 = pixel type flags, add together as needed:
@@ -29,26 +29,41 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_STRIP, STRIP_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(N_STRIP, STRIP_PIN, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(N_RING, RING_PIN, NEO_GRB + NEO_KHZ800);
+
+// Holds color definitions for both the strip and the ring
+struct Color{
+  uint32_t strip;
+  uint32_t ring;
+};
 
 // COLORS
 #define BRIGHTNESS 10 // 0-100
+#define NEW_BLUE 0, 0, 255
 #define BLUE strip.Color(0, 0, 255)
-#define PURPLE strip.Color(255, 0, 255)
-#define TEAL strip.Color(0, 128, 64)
-#define BLACK strip.Color(0, 0, 0)
-#define STRIP_OFF TEAL
-#define RING_OFF BLACK
+Color TEAL = {strip.Color(0, 128, 64), ring.Color(0, 128, 64)};
+Color PURPLE  = {strip.Color(255, 50, 255), ring.Color(255, 50, 255)};
+Color GREEN = {strip.Color(0, 255, 0), ring.Color(0, 255, 0)};
+Color DARK_PURPLE = {strip.Color(0, 0, 48, 0), strip.Color(0, 48, 48)};
+Color DARK_BLUE = {strip.Color(48, 0, 48, 0), strip.Color(48, 0, 48)};
+Color BLACK = {strip.Color(0, 0, 0), ring.Color(0, 0, 0)};
+Color WHITE = {strip.Color(0, 48, 48, 128), strip.Color(255, 205, 205)};
+
+
+Color c_stopped;  // Changed by pressing the stop button
+#define C_OFF DARK_PURPLE
 #define C_WORK PURPLE
-#define C_REST strip.Color(0, 255, 0)
+#define C_REST GREEN
 
 // Durations for each phase
 #define TICK 400 // In milliseconds
+#define LOOP_TICK 50 // In millisecond
 #define DEBUG_SPEEDUP 1 // Set to 1 for normal operation
 const unsigned long WORK_SEC = 25 * 60; // 25 min (in seconds)
 const unsigned long BREAK_SEC = 5 * 60; // 5 min (in seconds)
-#define SHORT_PER_LONG 3 // How many short breaks to each long break
+#define SHORT_PER_LONG 3 // How many short breaks to each long breaksss
+#define STOP_COLOR_SPEED 5.0 // 1 = 65.536 seconds
 
 #define TONE_HZ 200
 
@@ -65,6 +80,16 @@ const unsigned long BREAK_SEC = 5 * 60; // 5 min (in seconds)
 #define BTN_STOP 3
 #define BUZZER A1
 
+// Flags for setting different dimming levels for the lights
+#define N_DIM_LEVELS 3
+#define DIM_OFF 2
+#define DIM_LOW 1
+#define DIM_HIGH 0
+int stopDimLevel = DIM_HIGH;
+
+// Flags for handling button presses
+bool stopPending = 0;
+
 // Variables for debouncing buttons
 #define DEBOUNCE_MS 150
 unsigned long lastBtnPress;
@@ -78,6 +103,9 @@ long roundNum;
 bool isSilenced;
 #define AUDIBLE 0
 #define SILENCED 1
+
+// Function headers
+void setAllPixels(Adafruit_NeoPixel &pixel, uint32_t c, bool keepBluePin=false);
 
 bool isNewBtnPress() {
   // Check if it's been long enough since the last button press registered
@@ -104,13 +132,47 @@ void start_pressed() {
 
 void stop_pressed() {
   if (isNewBtnPress()) {
-    if (isSilenced == AUDIBLE && state == EXPIRED) {
-      Serial.println("Buzzer silenced");
-      isSilenced = SILENCED;
-    } else {
-      Serial.print("Stop requested\n");
-      state = STOPPING;
-    }
+    stopPending = 1;
+  };
+}
+
+Color stopped_color() {
+  Color color;
+  Serial.print("stopped_color() dim level: ");
+  Serial.println(stopDimLevel);
+  switch (stopDimLevel) {
+    case DIM_OFF :
+      color = BLACK;
+      break;
+    case DIM_LOW :
+      color = DARK_PURPLE;
+      break;
+    case DIM_HIGH :
+      color = WHITE;
+      break;
+  }
+  return color;
+}
+
+void stop_timer() {
+  Serial.println("Responding to stop button press.");
+  stopPending = 0;
+  if (isSilenced == AUDIBLE && state == EXPIRED) {
+    Serial.println("Buzzer silenced");
+    isSilenced = SILENCED;
+  } else if (state == STOPPED) {
+    // Cycle through the resting colors
+    stopDimLevel = ((stopDimLevel + 1) % N_DIM_LEVELS);
+    Serial.print("setting dim level to ");
+    Serial.print(stopDimLevel);
+    // Set the lights according to the dim level
+    Color color = stopped_color();
+    setAllPixels(ring, color.ring);
+    setAllPixels(strip, color.strip);
+  } else {
+    // We're doing something, so stop doing it
+    Serial.print("Stop requested\n");
+    state = STOPPING;
   }
 }
 
@@ -136,8 +198,9 @@ void stopTimer() {
 }
 
 
-void setAllPixels(Adafruit_NeoPixel &pixel, uint32_t c, bool keepBluePin=false) {
-  // Set all the neopixels to the given color
+void setAllPixels(Adafruit_NeoPixel &pixel, uint32_t c, bool keepBluePin=false)
+// Set all the neopixels to the given color
+{
   for (uint16_t i=0; i < pixel.numPixels(); i++) {
     pixel.setPixelColor(i, c);
   }
@@ -149,22 +212,25 @@ void setAllPixels(Adafruit_NeoPixel &pixel, uint32_t c, bool keepBluePin=false) 
 }
 
 
-void setRingLights(int numOn, uint32_t color) {
-  // Set a certain number of LEDs on the ring to on
+void setRingLights(int numOn, uint32_t color)
+// Set a certain number of LEDs on the ring to on
+{
   for (int i=0; i<numOn; i++) {
     ring.setPixelColor(i, color);
   }
   // Set the remaining LEDs off
   for (int i=numOn; i<N_RING; i++) {
-    ring.setPixelColor(i, RING_OFF);
+    ring.setPixelColor(i, C_OFF.ring);
   }
   ring.show();
 }
 
 
+
+uint32_t Wheel(byte WheelPos)
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
-uint32_t Wheel(byte WheelPos) {
+{
   WheelPos = 255 - WheelPos;
   if(WheelPos < 85) {
     return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
@@ -254,7 +320,7 @@ void setTimerLights(unsigned long mSeconds, long roundNum, float workBrightnessA
 
 void setWorkLights(unsigned long mSeconds, long roundNum) {
   // Set all the strip lights
-  setAllPixels(strip, C_WORK);
+  setAllPixels(strip, C_WORK.strip);
   return setTimerLights(mSeconds, roundNum);
 }
 
@@ -270,10 +336,8 @@ void setBreakLights(unsigned long mSeconds, long roundNum) {
     // Display how much break time there is left
     setTimerLights(mSeconds, roundNum, 0.);
     // Set the strip lights to be green
-    setAllPixels(strip, C_REST);
+    setAllPixels(strip, C_REST.strip);
   }
-  
-  
 }
 
 
@@ -283,18 +347,18 @@ void setExpiredLights(unsigned long mSeconds) {
 }
 
 
-void flashLights(unsigned long mSeconds, uint32_t color) {
+void flashLights(unsigned long mSeconds, Color color) {
   // Flash to lights to indicate the break has start
   unsigned long numTicks = mSeconds / DEBUG_SPEEDUP / TICK;
   if (numTicks % 2) {
     // Odd tick
-    setAllPixels(ring, RING_OFF, true);
-    setAllPixels(strip, RING_OFF, false);
+    setAllPixels(ring, C_OFF.ring, true);
+    setAllPixels(strip, C_OFF.strip, false);
     noTone(BUZZER);
   } else {
     // Even tick
-    setAllPixels(ring, color, true);
-    setAllPixels(strip, color, false);
+    setAllPixels(ring, color.ring, true);
+    setAllPixels(strip, color.strip, false);
     if (isSilenced == AUDIBLE) {
       tone(BUZZER, TONE_HZ);
     }
@@ -324,15 +388,42 @@ void flourish() {
     // Set the strip LED to on
     // uint16_t pxIdx = N_STRIP - (i * N_STRIP / 255) - 1;
     uint16_t pxIdx = i * N_STRIP / 255;
-    strip.setPixelColor(pxIdx, STRIP_OFF);
+    strip.setPixelColor(pxIdx, C_OFF.strip);
     // Set the ring LED off
     // pxIdx = N_RING - (i * N_RING / 255) - 1;
     pxIdx = i * N_RING / 255;
-    ring.setPixelColor(pxIdx, RING_OFF);
+    ring.setPixelColor(pxIdx, C_OFF.ring);
     // Update the device and wait for a bit
     strip.show();
     ring.show();
     delay(0.5);
+  }
+}
+
+
+void setOffLights() {
+  setAllPixels(strip, TEAL.strip, false);
+  setAllPixels(ring, TEAL.ring, true);
+}
+
+
+void setStoppedColor(unsigned long mSeconds)
+// Set the color of the strip pixels when the timer is stopped
+// Only sets pixels when we're in the STOP_DIM color
+// (bright white and off still work)
+{
+  if (stopDimLevel == DIM_LOW) {
+    unsigned short base_hue = mSeconds * STOP_COLOR_SPEED;
+    uint32_t color;
+    unsigned short px_hue, hue;
+    
+    for (uint16_t i=0; i < strip.numPixels(); i++) {
+      px_hue = (i / (float) strip.numPixels()) * 65536;
+      hue = base_hue - px_hue;
+      color = strip.ColorHSV(hue, 255, 191);
+      strip.setPixelColor(i, color);
+    }
+    strip.show();
   }
 }
 
@@ -357,6 +448,7 @@ void setup() {
   // Set initial state
   lastBtnPress = millis();
   stopTimer();
+  stop_pressed();
 }
 
 void loop() {
@@ -367,9 +459,12 @@ void loop() {
   state = getNewState(mSecondsIn, roundNum);
 
   // Set the lights appropriately
-  if (state == STOPPED) {
-    setAllPixels(strip, STRIP_OFF);
-    setAllPixels(ring, RING_OFF);
+  if (stopPending) {
+    stop_timer();
+  } else if (state == STOPPED) {
+    setStoppedColor(mSecondsIn);
+  //  setAllPixels(strip, c_stopped.strip);
+  //  setAllPixels(ring, c_stopped.ring);
   } else if (state == RUNNING) {
     setWorkLights(mSecondsIn, roundNum);
   } else if (state == BREAK) {
@@ -383,5 +478,5 @@ void loop() {
   }
 
   // Sleep until the next round
-  delay(TICK);
+  delay(LOOP_TICK);
 }
